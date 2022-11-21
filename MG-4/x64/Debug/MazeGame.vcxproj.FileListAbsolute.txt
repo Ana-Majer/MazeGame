@@ -1,0 +1,2 @@
+C:\Users\Xiloman\Desktop\MG-5\x64\Debug\MazeGame.exe
+C:\Users\Xiloman\Desktop\MG-4\x64\Debug\MazeGame.exe
