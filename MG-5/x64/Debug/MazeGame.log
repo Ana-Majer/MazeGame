@@ -1,0 +1,6 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets(2116,5): warning : The referenced project '..\CrtLib\CrtLib.vcxproj' does not exist.
+  CrtLib.cpp
+  pch.cpp
+  MazeGame.cpp
+  Создание кода...
+  MazeGame.vcxproj -> C:\Users\Xiloman\Desktop\MG-5\x64\Debug\MazeGame.exe
