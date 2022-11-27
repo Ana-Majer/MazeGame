@@ -90,25 +90,25 @@ void UpdateScore(int score)
 
 // Функция обновляет оставшееся время до окончания игры
 // параметр t функции - это текущее значение системного таймера, на момент вызова функции
-void UpdateClock(clock_t t)
+void UpdateClock(clock_t t, clock_t start, int& gState, int& gTime)
 {
-	gameTime = timeLimit - (t - tstart) / CLOCKS_PER_SEC; /* вычисляем оставшееся время в секундах
+	gTime = timeLimit - (t - start) / CLOCKS_PER_SEC; /* вычисляем оставшееся время в секундах
 					и помещаем результат в gameTime. (t-tstart) - кол-во миллисекунд, прошедшее
 					с момента старта игры. CLOCKS_PER_SEC - константа, определяющая количество
 					изменений системного таймера за 1 секунду. Для Windows это значение
 					равно 1000. Вычитая из timeLimit время, прошедшее с начала игры, мы вычисляем
 					остаток времени в секундах */
 	setlocale(LC_ALL, "ru-RU"); // переключаем локаль
-	if (gameTime < 0) // проверяем, закончилось ли время
+	if (gTime < 0) // проверяем, закончилось ли время
 	{
-		gameState = 2; // если да, то обновляем статус игры на 2 - игрок ПРОИГРАЛ
+		gState = 2; // если да, то обновляем статус игры на 2 - игрок ПРОИГРАЛ
 	}
 	else
 	{  // если время осталось
 		GotoXY(49, 30); // ставим курсор на последнюю строку
-		if (gameTime <= 15) SetTextColor(12);
+		if (gTime <= 15) SetTextColor(12);
 		else SetTextColor(10);
-		cout << "Осталось: " << gameTime << " секунд "; // выводим остаток времени в консоль
+		cout << "Осталось: " << gTime << " секунд "; // выводим остаток времени в консоль
 	}
 	setlocale(LC_ALL, "C"); // восстанавливаем настройки локали
 }
@@ -167,7 +167,7 @@ void PrintMaze(int maze[LY][LX], int sizeX, int sizeY)
 }
 
 // Функция определяет позицию игрока в массиве, обновляя значения глобальных переменных hx и hy
-bool FindFirstPlayerPosition(int maze[LY][LX], int sizeX, int sizeY)
+bool FindFirstPlayerPosition(int maze[LY][LX], int sizeX, int sizeY, int& ghx, int& ghy)
 {
 	bool door = false;
 	bool player = false;
@@ -181,8 +181,8 @@ bool FindFirstPlayerPosition(int maze[LY][LX], int sizeX, int sizeY)
 			}
 			if (maze[i][j] == 3)
 			{
-				hx = j;             // записываем столбец в hx
-				hy = i;             // записываем строку в hy
+				ghx = j;             // записываем столбец в hx
+				ghy = i;             // записываем строку в hy
 				player = true;
 			}
 		}
@@ -192,7 +192,7 @@ bool FindFirstPlayerPosition(int maze[LY][LX], int sizeX, int sizeY)
 	else
 	{
 		gameState = 2;
-		hx = hy = 0;    // если ничего не нашли - предполагаем, что игрок в позиции 0,0 это нелогично, но пока ничего предпринимать не будем, решение //  этой проблемы будет вашим персональным заданием по рефакторингу игры
+		ghx = ghy = 0;    // если ничего не нашли - предполагаем, что игрок в позиции 0,0 это нелогично, но пока ничего предпринимать не будем, решение //  этой проблемы будет вашим персональным заданием по рефакторингу игры
 		GotoXY(49, 30);
 		cout << "Maze is Invalid";
 		return false;
@@ -311,14 +311,15 @@ void ShowGameOverMessage()
 
 
 // Функция обрабатывает события клавиатуры и управляет игрой
-void Control()
+void Control(int& gameState)
 {
-	tstart = clock();  // запоминаем счетчик системного таймера в момент старта игры.
+	tstart = clock();
+	 // запоминаем счетчик системного таймера в момент старта игры.
 	UpdateScore(score); // обновляем счет игры, изначально он нулевой
 	unsigned char x;  // это переменная хранит символ, соответствующий нажатой клавише
 	while (gameState == 0)  // цикл игры - пока gameState == 0, игра идет
 	{
-		UpdateClock(clock());   // обновляем оставшееся время
+		UpdateClock(clock(), tstart, gameState, gameTime);  // обновляем оставшееся время
 		if (_kbhit())           // если была нажата клавиша - то обрабатываем ее, иначе следующая
 		{                       // итерация игрового цикла
 			x = _getch();       // считываем символ нажатой клавиш,
@@ -356,9 +357,9 @@ int main()
 	system("mode con cols=80 lines=31");
 	system("cls");
 	PrintMaze(maze, LX, LY);
-	FindFirstPlayerPosition(maze, LX, LY);
+	FindFirstPlayerPosition(maze, LX, LY, hx, hy);
 	HideCursor();
-	Control();
+	Control(gameState);
 	ShowCursor();
 }
 
