@@ -1,11 +1,11 @@
-﻿// MazeGame.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
+// MazeGame.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
 
 #include <iostream>
 #include <conio.h>
 #include "time.h"
 #include "windows.h"
-#include "CrtLib/CrtLib.h"
+#include "CrtLib.h"
 
 using namespace std;
 using namespace crt;
@@ -52,6 +52,14 @@ int maze[LY][LX] = {
 	{1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,4,0,4,0,4,0,4,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,4,0,0,0,0,0,0,1,1,1,1,4,1,1,1,1,1},
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
+
+/*
+void SetTextColor(int text, int background)
+{
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
+}
+*/
 
 
 // глобальные переменные
@@ -221,6 +229,37 @@ void MovePlayer(int dx, int dy)
 	}
 }
 
+void ShowGameOverMessage()
+{
+	
+	system("cls");
+	if (gameState == 1)
+	{
+		SetTextColor(10);
+		setlocale(LC_ALL, "ru-RU");
+		GotoXY(27, 10);
+		cout << "Вы сбежали" << endl;
+		GotoXY(18, 11);
+		SetTextColor(14);
+		cout << "Количество набранных очков: ";
+		SetTextColor(9);
+		cout << score << endl;
+	}
+	else if (gameState == 2)
+	{
+		SetTextColor(12);
+		setlocale(LC_ALL, "ru-RU");
+		GotoXY(25, 10);
+		cout << "Игра окончена" << endl;
+		GotoXY(18, 11);
+		SetTextColor(14);
+		cout << "Количество набранных очков: ";
+		SetTextColor(9);
+		cout << score << endl;
+	}
+}
+
+
 // Функция обрабатывает события клавиатуры и управляет игрой
 void Control()
 {
@@ -253,7 +292,13 @@ void Control()
 		}
 		Sleep(200);             // останавливаем игру на 200 мсек, если этого не делать, то
 	}                           // обновление игры будет слишком быстрым, мы не сможем управлять
-}                               // игроком, а также напрасно нагрузим процессор ненужной работой
+								// игроком, а также напрасно нагрузим процессор ненужной работой
+	ShowGameOverMessage();
+	
+}                               
+
+
+
 
 // Функция main, которая выполняется при запуске прграммы
 int main()
