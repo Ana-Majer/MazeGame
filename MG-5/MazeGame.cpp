@@ -396,9 +396,9 @@ void Control()
 
 }
 
-void frame(short x, short y, short cx, short cy) 
+void frame(short x, short y, short cx, short cy)
 {
-	
+
 	while (y--)
 		cout << endl;
 	short n = cy - 1;
